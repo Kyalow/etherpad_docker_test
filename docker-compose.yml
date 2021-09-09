@@ -1,0 +1,38 @@
+---
+version: "3.4"
+
+services:
+  postgresql:
+    image: postgres:9.6
+    environment:
+      POSTGRES_DB: etherpad
+      POSTGRES_USER: user_post
+      POSTGRES_PASSWORD: pass
+    networks:
+      - etherpad-net
+
+  etherpad:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: etherpad:v1
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=mydb
+      - DB_PORT=8080
+      - DB_NAME=postgres
+      - DB_USER=etherpad
+      - DB_PASS=pass
+      
+    ports:
+       - 8080:8080
+    networks:
+      - etherpad-net
+    volumes:
+      - etherpad_data:/etherpad
+    
+networks:
+  etherpad-net:
+
+volumes:
+  etherpad_data:
